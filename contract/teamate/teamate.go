@@ -38,7 +38,12 @@ const (
 
 //TODO 1.프로젝트 구조체 정의
 type Project struct {
-	//이름,
+	//project이름, dev이름, devlist, currentState, comment
+	ProjectID    string `json:"pid"`
+	DevID        string `json:"devid"`
+	DevList      string `json:"devlist"`
+	ProjectState int    `json:"pstate"`
+	Comment      string `json:"comment"`
 }
 
 //init함수
@@ -65,6 +70,13 @@ func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	} else {
 		return shim.Error("Not supportes smartcontract function name")
 	}
+
+	if fn == "registerProject" {
+		return s.registerProject(stub, args)
+	} else {
+		return shim.Error("Not supportes smartcontract function name")
+	}
+
 }
 
 //registerUser
@@ -156,13 +168,26 @@ func (s *SmartContract) readDev(stub shim.ChaincodeStubInterface, args []string)
 		return shim.Error("registerUser function need 1 parameter")
 	}
 
-	//getState 해봐서 err체크(id가 있으면 err)
+	//getState 해봐서 err체크(id가 있으면 er# testNetr)
 	devAsBytes, _ := stub.GetState(args[0])
 
 	return shim.Success(devAsBytes)
 }
 
 //registerProject
+func (s *SmartContract) registerProject(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	// args : pid, devid
+	if len(args) != 2 {
+		return shim.Error("registerUser function need 2 parameter")
+	}
+
+	var project = Project{ProjectID: args[0], DevID: args[1], ProjectState: 0}
+	proAsBytes, _ := json.Marshal(project)
+	stub.PutState(args[0], proAsBytes)
+
+	return shim.Success([]byte("tx is submitted"))
+}
+
 //recordProject
 //finalizeProject
 
