@@ -16,3 +16,6 @@ sleep 3
 
 docker exec cli peer chaincode invoke -n teamate  -C mychannel -c '{"Args":["readDev","user1"]}'
 sleep 3
+
+docker exec cli peer chaincode invoke -n teamate  -C mychannel -c '{"Args":["registerProject","project1","user1"]}'
+sleep 3
